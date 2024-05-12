@@ -26,5 +26,7 @@ func (user *User) Validate(db *gorm.DB) bool {
 		return false
 	}
 
+	*user = result
+
 	return true
 }

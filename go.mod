@@ -9,9 +9,11 @@ require (
 	github.com/shopspring/decimal v1.4.0
 	go.mongodb.org/mongo-driver v1.15.0
 	golang.org/x/crypto v0.23.0
+	golang.org/x/oauth2 v0.20.0
 )
 
 require (
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect

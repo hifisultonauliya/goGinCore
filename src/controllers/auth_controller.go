@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -45,6 +46,8 @@ func (ac *AuthController) Login(c *gin.Context) {
 	}
 
 	userid := strconv.FormatUint(uint64(user.ID), 10)
+	log.Println(">>> user.ID login", user.ID)
+	log.Println(">>> userid login", userid)
 	token, err := helper.GenerateToken(userid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
@@ -87,13 +90,13 @@ func (ac *AuthController) GoogleCallback(c *gin.Context) {
 	}
 
 	userid := strconv.FormatUint(uint64(result.ID), 10)
-	token, err = helper.GenerateToken(userid)
+	token2, err := helper.GenerateToken(userid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{"token": token2})
 }
 
 func getUserInfo(token *oauth2.Token) (map[string]interface{}, error) {
