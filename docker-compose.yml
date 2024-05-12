@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  db:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_USER: hifisa 
+      POSTGRES_PASSWORD: 123123321 
+      POSTGRES_DB: pgIntikomBerlianMustika
+    ports:
+      - 5432:5432
+    networks:
+      - app_network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'hifisa', '-d', 'pgIntikomBerlianMustika']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  goapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app_network
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: hifisa
+      POSTGRES_PASSWORD: 123123321
+      POSTGRES_DB: pgIntikomBerlianMustika
+
+  # supertokens:
+  #   image: registry.supertokens.io/supertokens/supertokens-postgresql:9.0.2
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   ports:
+  #     - 3567:3567
+  #   environment:
+  #     POSTGRESQL_CONNECTION_URI: "postgresql://hifisa:123123321@db:5432/pgIntikomBerlianMustika"
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: >
+  #       bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+networks:
+  app_network:
+    driver: bridge
